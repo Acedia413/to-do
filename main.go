@@ -38,10 +38,21 @@ func scanTask(scanner *bufio.Scanner) task {
 	return t
 }
 
-func main() {
-	var t task
+func createTasks(scanner *bufio.Scanner) []task {
 	tasks := make([]task, 0)
+	fmt.Println("Добавить задачу?")
+	scanner.Scan()
+	for scanner.Text() == "да" {
+		t := scanTask(scanner)
+		tasks = append(tasks, t)
+		fmt.Println("Добавить ещё задачу?")
+		scanner.Scan()
+	}
+	return tasks
+}
+
+func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	t = scanTask(scanner)
-	tasks = append(tasks, t)
+	tasks := createTasks(scanner)
+	fmt.Println(tasks)
 }
