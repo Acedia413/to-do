@@ -51,8 +51,28 @@ func createTasks(scanner *bufio.Scanner) []task {
 	return tasks
 }
 
+func completeCheck(b bool) string {
+	var check string
+	switch {
+	case b == true:
+		check = "выполнено"
+	case b == false:
+		check = "не выполнено"
+	}
+
+	return check
+}
+
+func viewTasks(tasks []task) {
+	fmt.Println("Вывод списка задач:")
+	for i := range len(tasks) {
+		fmt.Printf("\nНазвание задачи:%s\nОписание задачи:%s\nСтатус задачи:%s", tasks[i].Name, tasks[i].Description, completeCheck(tasks[i].Complete))
+	}
+
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	tasks := createTasks(scanner)
-	fmt.Println(tasks)
+	viewTasks(tasks)
 }
