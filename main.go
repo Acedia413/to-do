@@ -63,13 +63,18 @@ func deleteTasks(scanner *bufio.Scanner, tasks []task) []task {
 			fmt.Println("Ошибка ввода:", err)
 			return tasks
 		} else {
-			tasks = slices.Delete(tasks, i-1, i)
-			return tasks
-		} 
+			if i > 0 && i <= len(tasks) {
+				tasks = slices.Delete(tasks, i-1, i)
+				return tasks
+			} else {
+				fmt.Println("Несуществующий номер задачи.")
+				return tasks
+			}
+		}
 	} else {
 		return tasks
 	}
-
+	
 }
 
 func completeCheck(b bool) string {
