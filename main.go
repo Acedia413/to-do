@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"slices"
 )
 
 type task struct {
@@ -51,6 +52,26 @@ func createTasks(scanner *bufio.Scanner) []task {
 	return tasks
 }
 
+func deleteTasks(scanner *bufio.Scanner, tasks []task) []task {
+	var i int
+	fmt.Println("Хотите удалить задачу?")
+	scanner.Scan()
+	if scanner.Text() == "да" {
+		fmt.Println("Введите номер задачи:")
+		_, err := fmt.Scanln(&i)
+		if err != nil {
+			fmt.Println("Ошибка ввода:", err)
+			return tasks
+		} else {
+			tasks = slices.Delete(tasks, i-1, i)
+			return tasks
+		} 
+	} else {
+		return tasks
+	}
+
+}
+
 func completeCheck(b bool) string {
 	var check string
 	switch {
@@ -74,5 +95,7 @@ func viewTasks(tasks []task) {
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	tasks := createTasks(scanner)
+	viewTasks(tasks)
+	deleteTasks(scanner, tasks)
 	viewTasks(tasks)
 }
