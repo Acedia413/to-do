@@ -74,7 +74,7 @@ func deleteTasks(scanner *bufio.Scanner, tasks []task) []task {
 	} else {
 		return tasks
 	}
-	
+
 }
 
 func completeCheck(b bool) string {
@@ -97,10 +97,48 @@ func viewTasks(tasks []task) {
 
 }
 
-func main() {
+func changeComplete(tasks []task) []task {
+	var i int
+	fmt.Println("Введите номер задачи для изменения статуса:")
+	_, err := fmt.Scanln(&i)
+	if err != nil {
+		fmt.Println("Ошибка ввода:", err)
+		return tasks
+	} else {
+		if i > 0 && i <= len(tasks) {
+			tasks[i-1].Complete = true
+		} else {
+			fmt.Println("Несуществующий номер задачи.")
+			return tasks
+		}
+	}
+
+	return tasks
+}
+
+func taskMenu() {
+	var i int
+	tasks := make([]task, 0)
 	scanner := bufio.NewScanner(os.Stdin)
-	tasks := createTasks(scanner)
-	viewTasks(tasks)
-	deleteTasks(scanner, tasks)
-	viewTasks(tasks)
+	fmt.Printf("Выберите действие:\n1.Добавить задачу\n2.Удалить задачу\n3.Показать список задач\n4.Изменить статус выполнения задачи")
+	_, err := fmt.Scanln(&i)
+	if err != nil {
+		fmt.Println("Ошибка ввода:", err)
+		return
+	} else {
+		switch {
+		case i == 1:
+			tasks = createTasks(scanner)
+		case i == 2:
+			tasks = deleteTasks(scanner, tasks)
+		case i == 3:
+			viewTasks(tasks)
+		case i == 4:
+			tasks = changeComplete(tasks)
+		}
+	}
+}
+
+func main() {
+	taskMenu()
 }
