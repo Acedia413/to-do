@@ -117,26 +117,28 @@ func changeComplete(tasks []task) []task {
 }
 
 func taskMenu() {
-	var i int
 	tasks := make([]task, 0)
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Printf("Выберите действие:\n1.Добавить задачу\n2.Удалить задачу\n3.Показать список задач\n4.Изменить статус выполнения задачи")
-	_, err := fmt.Scanln(&i)
-	if err != nil {
-		fmt.Println("Ошибка ввода:", err)
-		return
-	} else {
+	for {
+		fmt.Printf("Выберите действие:\n1.Добавить задачу\n2.Удалить задачу\n3.Показать список задач\n4.Изменить статус выполнения задачи\n5.Завершение\n")
+		scanner.Scan()
+		i := scanner.Text()
 		switch {
-		case i == 1:
+		case i == "1":
 			tasks = createTasks(scanner)
-		case i == 2:
+		case i == "2":
 			tasks = deleteTasks(scanner, tasks)
-		case i == 3:
+		case i == "3":
 			viewTasks(tasks)
-		case i == 4:
+		case i == "4":
 			tasks = changeComplete(tasks)
+		case i == "5":
+			return
+		default:
+			fmt.Println("Неизвестный номер.")
 		}
 	}
+
 }
 
 func main() {
