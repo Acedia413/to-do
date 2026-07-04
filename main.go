@@ -92,7 +92,7 @@ func completeCheck(b bool) string {
 func viewTasks(tasks []task) {
 	fmt.Println("Вывод списка задач:")
 	for i := range len(tasks) {
-		fmt.Printf("\nНазвание задачи:%s\nОписание задачи:%s\nСтатус задачи:%s", tasks[i].Name, tasks[i].Description, completeCheck(tasks[i].Complete))
+		fmt.Printf("\nНомер задачи:%d\nНазвание задачи:%s\nОписание задачи:%s\nСтатус задачи:%s\n", i+1, tasks[i].Name, tasks[i].Description, completeCheck(tasks[i].Complete))
 	}
 
 }
