@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"slices"
@@ -11,6 +12,8 @@ type task struct {
 	Name, Description string
 	Complete          bool
 }
+
+const filename = "tasks.json"
 
 func scanTask(scanner *bufio.Scanner) task {
 	var t task
@@ -116,8 +119,7 @@ func changeComplete(tasks []task) []task {
 	return tasks
 }
 
-func taskMenu() {
-	tasks := make([]task, 0)
+func taskMenu(tasks []task) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Printf("Выберите действие:\n1.Добавить задачу\n2.Удалить задачу\n3.Показать список задач\n4.Изменить статус выполнения задачи\n5.Завершение\n")
@@ -141,6 +143,38 @@ func taskMenu() {
 
 }
 
+func loadTasks() ([]task, error) {
+	var tasks []task
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	dec := json.NewDecoder(f)
+	err = dec.Decode(&tasks)
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
+
+func saveTasks(tasks []task) error {
+    f, err := os.Create(filename)
+    if err != nil {
+        return err
+    }
+    defer f.Close()
+
+    encoder := json.NewEncoder(f)
+    return encoder.Encode(tasks)
+}
+
 func main() {
-	taskMenu()
+	tasks, err := loadTasks()
+	if err != nil {
+		fmt.Printf("ошибка: %v\n", err)
+	}
+	taskMenu(tasks)
 }
