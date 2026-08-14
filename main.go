@@ -42,8 +42,7 @@ func scanTask(scanner *bufio.Scanner) task {
 	return t
 }
 
-func createTasks(scanner *bufio.Scanner) []task {
-	tasks := make([]task, 0)
+func createTasks(scanner *bufio.Scanner, tasks []task) []task {
 	fmt.Println("Добавить задачу?")
 	scanner.Scan()
 	for scanner.Text() == "да" {
@@ -51,6 +50,10 @@ func createTasks(scanner *bufio.Scanner) []task {
 		tasks = append(tasks, t)
 		fmt.Println("Добавить ещё задачу?")
 		scanner.Scan()
+	}
+	err := saveTasks(tasks)
+	if err != nil {
+		fmt.Println("Ошибка сохранения:", err)
 	}
 	return tasks
 }
@@ -68,6 +71,10 @@ func deleteTasks(scanner *bufio.Scanner, tasks []task) []task {
 		} else {
 			if i > 0 && i <= len(tasks) {
 				tasks = slices.Delete(tasks, i-1, i)
+				err = saveTasks(tasks)
+				if err != nil {
+					fmt.Println("Ошибка сохранения:", err)
+				}
 				return tasks
 			} else {
 				fmt.Println("Несуществующий номер задачи.")
@@ -110,6 +117,10 @@ func changeComplete(tasks []task) []task {
 	} else {
 		if i > 0 && i <= len(tasks) {
 			tasks[i-1].Complete = true
+			err = saveTasks(tasks)
+			if err != nil {
+				fmt.Println("Ошибка сохранения:", err)
+			}
 		} else {
 			fmt.Println("Несуществующий номер задачи.")
 			return tasks
@@ -127,7 +138,7 @@ func taskMenu(tasks []task) {
 		i := scanner.Text()
 		switch {
 		case i == "1":
-			tasks = createTasks(scanner)
+			tasks = createTasks(scanner, tasks)
 		case i == "2":
 			tasks = deleteTasks(scanner, tasks)
 		case i == "3":
@@ -161,14 +172,14 @@ func loadTasks() ([]task, error) {
 }
 
 func saveTasks(tasks []task) error {
-    f, err := os.Create(filename)
-    if err != nil {
-        return err
-    }
-    defer f.Close()
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
 
-    encoder := json.NewEncoder(f)
-    return encoder.Encode(tasks)
+	encoder := json.NewEncoder(f)
+	return encoder.Encode(tasks)
 }
 
 func main() {
